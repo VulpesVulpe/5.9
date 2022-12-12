@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from datetime import datetime, timezone
+from django.core.validators import MinValueValidator
 
 
 
@@ -34,6 +35,8 @@ class Author(models.Model):
 
 class Category(models.Model):
     category_name = models.CharField(max_length=255, unique=True)
+    def __str__(self):
+        return self.category_name.title()
 
 
 class Post(models.Model):
@@ -41,9 +44,16 @@ class Post(models.Model):
     post_choice = models.CharField(max_length=2, choices=POSITIONS, default=news)
     post_date = models.DateField(auto_now_add=True)
     post_category = models.ManyToManyField(Category, through='PostCategory')
-    post_title = models.CharField(max_length=50)
+    post_title = models.CharField(max_length=90)
     post_text = models.TextField()
     post_rating = models.IntegerField(default=0)
+    quantity = models.IntegerField(
+        validators=[MinValueValidator(0)])
+    category = models.ForeignKey(
+        to='Category',
+        on_delete=models.CASCADE,
+        related_name='posts',
+    )
 
     def like(self, amount=1):
         self.post_rating += amount
@@ -56,6 +66,9 @@ class Post(models.Model):
     def preview(self):
         self.post_text = self.post_text[0:124] + '...'
         self.save()
+
+    def __str__(self):
+        return f'{self.post_title.title()}: {self.post_text[:100]}'
 
 
 class PostCategory(models.Model):
