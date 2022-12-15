@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 from datetime import datetime, timezone
 from django.core.validators import MinValueValidator
+from django.urls import reverse
 
 
 
@@ -40,15 +41,13 @@ class Category(models.Model):
 
 
 class Post(models.Model):
-    post_author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    post_author = models.ForeignKey(Author, on_delete=models.CASCADE, verbose_name='Автор поста')
     post_choice = models.CharField(max_length=2, choices=POSITIONS, default=news)
-    post_date = models.DateField(auto_now_add=True)
+    post_date = models.DateField(auto_now_add=True, verbose_name="Дата поста")
     post_category = models.ManyToManyField(Category, through='PostCategory')
-    post_title = models.CharField(max_length=90)
-    post_text = models.TextField()
-    post_rating = models.IntegerField(default=0)
-    quantity = models.IntegerField(
-        validators=[MinValueValidator(0)])
+    post_title = models.CharField(max_length=90, verbose_name='Заголовок поста')
+    post_text = models.TextField(verbose_name='Текст поста')
+    post_rating = models.IntegerField(default=0, verbose_name='Рейтинг поста')
     category = models.ForeignKey(
         to='Category',
         on_delete=models.CASCADE,
@@ -69,6 +68,9 @@ class Post(models.Model):
 
     def __str__(self):
         return f'{self.post_title.title()}: {self.post_text[:100]}'
+
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.id)])
 
 
 class PostCategory(models.Model):

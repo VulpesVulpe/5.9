@@ -1,4 +1,4 @@
-{% extends 'flatpages/default.html' %} 
+{% extends 'flatpages/default.html' %}
 
 {% load custom_filters %}
 {% load custom_tag %}
@@ -8,14 +8,13 @@ Posts
 {% endblock title %}
 
 {% block content %}
-<h1>Все новости</h1>
-   <h3>{{ posts|length }}</h3>
+<h1>Поиск новости</h1>
    <hr>
-   <form action="{% url 'post_search' %}" method="get">
-       <input type="button" value="Поиск по критериям" onClick='location.href="http://127.0.0.1:8000/news/search/"'>
-       <input type="button" value="Добавить новость" onClick='location.href="http://127.0.0.1:8000/news/create/"'>
-       <input type="button" value="Добавить статью" onClick='location.href="http://127.0.0.1:8000/news/articles/create/"'>
+   <form action="" method="get">
+       {{ filterset.form.as_p }}
+       <input type="submit" value="Найти" />
    </form>
+
    {% if posts %}
        <table>
            <tr>

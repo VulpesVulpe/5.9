@@ -1,6 +1,11 @@
-from django.views.generic import ListView, DetailView
+from django.urls import reverse_lazy
+from django.views.generic import (
+    ListView, DetailView, CreateView, UpdateView, DeleteView
+)
+
+from .filters import ProductFilter
+from .forms import ProductForm
 from .models import Product
-from datetime import datetime
 
 
 class ProductsList(ListView):
@@ -8,21 +13,38 @@ class ProductsList(ListView):
     ordering = 'name'
     template_name = 'products.html'
     context_object_name = 'products'
+    paginate_by = 2
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.filterset = ProductFilter(self.request.GET, queryset)
+        return self.filterset.qs
 
     def get_context_data(self, **kwargs):
-        # С помощью super() мы обращаемся к родительским классам
-        # и вызываем у них метод get_context_data с теми же аргументами,
-        # что и были переданы нам.
-        # В ответе мы должны получить словарь.
         context = super().get_context_data(**kwargs)
-        # К словарю добавим текущую дату в ключ 'time_now'.
-        context['time_now'] = datetime.utcnow()
-        # Добавим ещё одну пустую переменную,
-        # чтобы на её примере рассмотреть работу ещё одного фильтра.
-        context['next_sale'] = None
+        context['filterset'] = self.filterset
         return context
+
 
 class ProductDetail(DetailView):
     model = Product
     template_name = 'product.html'
     context_object_name = 'product'
+
+
+class ProductCreate(CreateView):
+    form_class = ProductForm
+    model = Product
+    template_name = 'product_edit.html'
+
+
+class ProductUpdate(UpdateView):
+    form_class = ProductForm
+    model = Product
+    template_name = 'product_edit.html'
+
+# Представление удаляющее товар.
+class ProductDelete(DeleteView):
+    model = Product
+    template_name = 'product_delete.html'
+    success_url = reverse_lazy('product_list')
