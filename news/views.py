@@ -3,6 +3,8 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .filter import PostFilter
 from .form import PostForm
 from .models import Post
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+
 
 
 class PostsList(ListView):
@@ -38,32 +40,37 @@ class PostsSearch(ListView):
         context['filterset'] = self.filterset
         return context
 
-class PostsCreate(CreateView):
+class PostsCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
+    permission_required = ('news.add_post',)
 
     def form_valid(self, form):
         post = form.save(commit=False)
         post.post_choice = "NW"
         return super().form_valid(form)
 
-class ArticlesCreate(CreateView):
+class ArticlesCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
+    permission_required = ('news.add_post',)
 
     def form_valid(self, form):
         post = form.save(commit=False)
         post.post_choice = "AR"
         return super().form_valid(form)
 
-class PostUpdate(UpdateView):
+class PostUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
+    permission_required = ('news.change_post',)
 
-class PostDelete(DeleteView):
+
+class PostDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post_list')
+    permission_required = ('news.delete_post',)
