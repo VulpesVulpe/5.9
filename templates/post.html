@@ -9,7 +9,20 @@ Post
 {% block content %}
 <h1>{{ post.post_title|censor }}</h1>
 <hr>
-<h2>{{ "Дата Публикации: " }}{{ post.post_date|date:"d.m.Y" }}</h2>
+<h2>{{ "Дата Публикации: " }}{{ post.post_date|date:"d.m.Y" }}</h2><h2>{{ "Категория: " }}{{ post.category.get }}</h2>
+<hr>
+    {% if post.category.all %}
+    <h5>Категории:</h5>
+        {% for i in post.category.all %}
+            {{ i }}{% if not request.user.is_authenticated %}
+                <button><a href="http://127.0.0.1:8000/accounts/login/"> Подписаться </a></button>
+            {% elif i not in subscribes %}
+                <button> <a href="{% url 'subscribe' i.pk %}"> Подписаться </a></button>
+            {% else %}
+                <h6>Вы подписаны на эту категорию</h6>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
 <hr>
 <h3>{{ post.post_text|censor }}</h3>
 {% endblock content %}

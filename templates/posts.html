@@ -9,7 +9,7 @@ Posts
 
 {% block content %}
 <h1>Все новости</h1>
-   <h3>{{ posts|length }}</h3>
+   <h3> Всего новостей: {{ posts|length }}</h3>
    <hr>
    <form action="{% url 'post_search' %}" method="get">
        <input type="button" value="Поиск по критериям" onClick='location.href="http://127.0.0.1:8000/news/search/"'>
@@ -18,6 +18,7 @@ Posts
        <input type="button" value="Войти в систему" onClick='location.href="http://127.0.0.1:8000/accounts/login/"'>
        <input type="button" value="Регистрация" onClick='location.href="http://127.0.0.1:8000/accounts/signup/"'>
    </form>
+   <hr>
    {% if posts %}
        <table>
            <tr>
@@ -28,7 +29,7 @@ Posts
 
            {% for post in posts %}
            <tr>
-               <td>{{ post.post_title|censor }}</td>
+               <td><a href="{% url 'post_detail' post.pk %}">{{ post.post_title|censor }}</a></td>
                <td>{{ post.post_date|date:"d.m.Y" }}</td>
                <td>{{ post.post_text|truncatewords:20|censor }}</td>
            </tr>

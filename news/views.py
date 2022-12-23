@@ -1,9 +1,15 @@
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .filter import PostFilter
 from .form import PostForm
-from .models import Post
+from .models import Post, Category, Author
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.shortcuts import render, reverse, redirect
+from django.contrib.auth.models import User
+from django.conf import settings
+
 
 
 
@@ -22,6 +28,12 @@ class PostDetail(DetailView):
     model = Post
     template_name = 'post.html'
     context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context['subscribes'] = Category.objects.filter(subscribers=self.request.user)
+        return context
 
 class PostsSearch(ListView):
     model = Post
@@ -51,6 +63,8 @@ class PostsCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         post.post_choice = "NW"
         return super().form_valid(form)
 
+
+
 class ArticlesCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
@@ -74,3 +88,15 @@ class PostDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post_list')
     permission_required = ('news.delete_post',)
+
+
+def subscribe_me(request, **kwargs):
+    user = request.user
+    key = kwargs.get('pk')
+    cat = Category.objects.get(id=key)
+    if not Category.objects.filter(id=key, subscribers=user).exists():
+        cat.subscribers.add(user)
+    return redirect('post_list')
+
+
+

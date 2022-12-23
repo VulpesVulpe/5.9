@@ -33,26 +33,31 @@ class Author(models.Model):
         self.author_rating = result_sum_rating * 3 + result_sum_comment_rating
         self.save()
 
+    def __str__(self):
+        return self.author.username
 
 class Category(models.Model):
     category_name = models.CharField(max_length=255, unique=True)
+    subscribers = models.ManyToManyField(User, through='CategoryUser')
     def __str__(self):
         return self.category_name.title()
 
 
+
+class CategoryUser(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+
 class Post(models.Model):
-    post_author = models.ForeignKey(Author, on_delete=models.CASCADE, verbose_name='Автор поста')
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, verbose_name='Автор поста')
     post_choice = models.CharField(max_length=2, choices=POSITIONS, default=news)
     post_date = models.DateField(auto_now_add=True, verbose_name="Дата поста")
-    post_category = models.ManyToManyField(Category, through='PostCategory')
+    category = models.ManyToManyField(Category, through='PostCategory')
     post_title = models.CharField(max_length=90, verbose_name='Заголовок поста')
     post_text = models.TextField(verbose_name='Текст поста')
     post_rating = models.IntegerField(default=0, verbose_name='Рейтинг поста')
-    category = models.ForeignKey(
-        to='Category',
-        on_delete=models.CASCADE,
-        related_name='posts',
-    )
 
     def like(self, amount=1):
         self.post_rating += amount
@@ -92,3 +97,4 @@ class Comment(models.Model):
     def dislike(self, amount=1):
         self.comment_rating -= amount
         self.save()
+
