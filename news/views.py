@@ -1,6 +1,5 @@
-from django.core.mail import send_mail, EmailMultiAlternatives
-from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .filter import PostFilter
 from .form import PostForm
@@ -9,6 +8,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.shortcuts import render, reverse, redirect
 from django.contrib.auth.models import User
 from django.conf import settings
+from .tasks import *
+from django.http import HttpResponse
+
 
 
 

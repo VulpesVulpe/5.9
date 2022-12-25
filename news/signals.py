@@ -15,4 +15,4 @@ def send_mail_on_create_post(sender, action, instance, **kwargs):
         for c in cats:
             users = c.subscribers.all()
             for u in users:
-                task_send_mail_on_create_post(instance.pk, u.pk)
+                task_send_mail_on_create_post.delay(instance.pk, u.pk)

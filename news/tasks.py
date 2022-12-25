@@ -4,9 +4,12 @@ from django.contrib.sites.models import Site
 from django.conf import settings
 from datetime import datetime, timedelta
 from .models import *
+from celery import shared_task
 
 
 
+
+@shared_task
 def task_send_mail_on_create_post(post_id, user_id):
     domain = Site.objects.get_current().domain
     post = Post.objects.get(pk=post_id)
@@ -30,6 +33,7 @@ def task_send_mail_on_create_post(post_id, user_id):
     msg.send()
 
 
+@shared_task
 def task_send_week_news():
     one_week_ago = datetime.today() - timedelta(days=7)
     cats = Category.objects.all()

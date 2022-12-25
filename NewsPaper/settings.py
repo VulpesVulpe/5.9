@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-+jn^xa_4e4a&t(-73+1=)@v(v@m&90yni4#&6qe&uc%*6r-r@$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = []
 
 SITE_ID = 1
 
@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'fpages',
-    'simpleapp',
     'django_filters',
     'django_admin_filters',
     'taggit',
@@ -174,3 +173,8 @@ EMAIL_USE_SSL = True
 
 DEFAULT_FROM_EMAIL = 'shadrin.yuriy.hihey@yandex.ru'
 
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
