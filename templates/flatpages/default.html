@@ -13,38 +13,36 @@
     </head>
     <body>
         <!-- Responsive navbar-->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
-           <div class="container">
-               <a class="navbar-brand" href="#">NewsPortal</a>
-               <button class="navbar-toggler" type="button" data-toggle="collapse"
-                       data-target="#navbarResponsive"
-                       aria-controls="navbarResponsive" aria-expanded="false"
-                       aria-label="Toggle navigation">
-                   <span class="navbar-toggler-icon"></span>
-               </button>
-               <div class="collapse navbar-collapse" id="navbarResponsive">
-                   <ul class="navbar-nav ml-auto">
-                       <li class="nav-item active">
-                           <a class="nav-link" href="#">Posts
-                               <span class="sr-only"></span>
-                           </a>
-                       </li>
-                       <li class="nav-item">
-                           <a class="nav-link" href="/news/">Все посты</a>
-                       </li>
-                       <li class="nav-item">
-                           <a class="nav-link" href="/accounts/login/">Войти в систему</a>
-                       </li>
-                       <li class="nav-item">
-                           <a class="nav-link" href="/accounts/signup/">Зарегистрироваться</a>
-                       </li>
-                       <li class="nav-item">
-                           <a class="nav-link" href="/news/search/">Поиск</a>
-                       </li>
-                   </ul>
-               </div>
-           </div>
-        </nav>
+        {% load cache %}
+            {% cache 300 nav %}
+                <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+                   <div class="container">
+                       <a class="navbar-brand" href="/news/">NewsPortal</a>
+                       <button class="navbar-toggler" type="button" data-toggle="collapse"
+                               data-target="#navbarResponsive"
+                               aria-controls="navbarResponsive" aria-expanded="false"
+                               aria-label="Toggle navigation">
+                           <span class="navbar-toggler-icon"></span>
+                       </button>
+                       <div class="collapse navbar-collapse" id="navbarResponsive">
+                           <ul class="navbar-nav ml-auto">
+                               <li class="nav-item">
+                                   <a class="nav-link" href="/news/">Все посты</a>
+                               </li>
+                               <li class="nav-item">
+                                   <a class="nav-link" href="/accounts/login/">Войти в систему</a>
+                               </li>
+                               <li class="nav-item">
+                                   <a class="nav-link" href="/accounts/signup/">Зарегистрироваться</a>
+                               </li>
+                               <li class="nav-item">
+                                   <a class="nav-link" href="/news/search/">Поиск</a>
+                               </li>
+                           </ul>
+                       </div>
+                   </div>
+                </nav>
+            {% endcache %}
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">

@@ -9,7 +9,7 @@ from django.shortcuts import render, reverse, redirect
 from django.contrib.auth.models import User
 from django.conf import settings
 from .tasks import *
-from django.http import HttpResponse
+from django.core.cache import cache
 
 
 
@@ -30,12 +30,22 @@ class PostDetail(DetailView):
     model = Post
     template_name = 'post.html'
     context_object_name = 'post'
+    queryset = Post.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['subscribes'] = Category.objects.filter(subscribers=self.request.user)
         return context
+
+    def get_context(self, *args, **kwargs):
+        context = cache.get(f'post-{self.kwargs["pk"]}', None)
+        if not context:
+            context = super().get_context(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs["pk"]}', context)
+        return context
+
+
 
 class PostsSearch(ListView):
     model = Post

@@ -2,22 +2,27 @@
 
 {% load custom_filters %}
 {% load custom_tag %}
+{% load cache %}
 
-{% block title %}
-Posts
-{% endblock title %}
+{% cache 30 title %}
+    {% block title %}
+    Posts
+    {% endblock title %}
+{% endcache %}
 
 {% block content %}
 <h1>Все новости</h1>
    <h3> Всего новостей: {{ posts|length }}</h3>
    <hr>
-   <form action="{% url 'post_search' %}" method="get">
-       <input type="button" value="Поиск по критериям" onClick='location.href="http://127.0.0.1:8000/news/search/"'>
-       <input type="button" value="Добавить новость" onClick='location.href="http://127.0.0.1:8000/news/create/"'>
-       <input type="button" value="Добавить статью" onClick='location.href="http://127.0.0.1:8000/news/articles/create/"'>
-       <input type="button" value="Войти в систему" onClick='location.href="http://127.0.0.1:8000/accounts/login/"'>
-       <input type="button" value="Регистрация" onClick='location.href="http://127.0.0.1:8000/accounts/signup/"'>
-   </form>
+    {% cache 30 form %}
+       <form action="{% url 'post_search' %}" method="get">
+           <input type="button" value="Поиск по критериям" onClick='location.href="http://127.0.0.1:8000/news/search/"'>
+           <input type="button" value="Добавить новость" onClick='location.href="http://127.0.0.1:8000/news/create/"'>
+           <input type="button" value="Добавить статью" onClick='location.href="http://127.0.0.1:8000/news/articles/create/"'>
+           <input type="button" value="Войти в систему" onClick='location.href="http://127.0.0.1:8000/accounts/login/"'>
+           <input type="button" value="Регистрация" onClick='location.href="http://127.0.0.1:8000/accounts/signup/"'>
+       </form>
+    {% endcache %}
    <hr>
    {% if posts %}
        <table>
